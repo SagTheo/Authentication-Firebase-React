@@ -19,10 +19,11 @@
 }
 
 .show {
+    position: absolute;
     display: block;
     width: fit-content;
     margin-top: 5px;
-    margin-left: 94%;
+    margin-left: 88%;
     padding: 0.5rem;
     text-align: end;
     border: 1px black solid;
