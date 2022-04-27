@@ -29,7 +29,7 @@ const Login = () => {
 
   return (
     <div className='container'>
-        <h1>Log in</h1>
+        <h1>Log in</h1> 
         <form className='form'>
             <label htmlFor="username">Username</label>
             <input type="text" 
