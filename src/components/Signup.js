@@ -1,21 +1,27 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import '../styles/form.css'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '../firebase'
 
 const Signup = () => {
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConf, setPasswordConf] = useState('')
-  const [usernameError, setUsernameError] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const [passwordConfError, setPasswordConfError] = useState('')
+  let navigate = useNavigate()
 
-  const checkUsername = (event, username) => {
-    if (username === '') {
+  const checkEmail = (event, email) => {
+    if (email === '') {
       event.preventDefault()
-      setUsernameError('You must enter a username')
+      setEmailError('You must enter an email')
+      return false
     } else {
-      setUsernameError('')
+      setEmailError('')
+      return true
     }
   }
 
@@ -23,8 +29,10 @@ const Signup = () => {
     if (password === '') {
       event.preventDefault()
       setPasswordError('You must enter a password')
+      return false
     } else {
       setPasswordError('')
+      return true
     }
   }
 
@@ -32,26 +40,40 @@ const Signup = () => {
     if (passwordConf === '') {
       event.preventDefault()
       setPasswordConfError('You must re-enter your password')
+      return false
     } else if (passwordConf !== password) {
       event.preventDefault()
       setPasswordConfError('Passwords must be the same')
+      return false
     } else {
       setPasswordConfError('')
+      return true
     }
+  }
+
+  const createUser = (email, password) => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(userCredential => {
+        const user = userCredential.user
+        console.log(user)
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   return (
     <div className='container'>
         <h1>Sign up</h1>
         <form className='form'>
-            <label htmlFor="username">Username</label>
+            <label htmlFor="email">Email</label>
             <input type="text" 
-                   id="username" 
+                   id="email" 
                    className='input'
-                   value={username}
-                   onChange={(e) => setUsername(e.target.value)}
+                   value={email}
+                   onChange={(e) => setEmail(e.target.value)}
             />
-            <p className={usernameError ? 'show' : 'hide'}>{usernameError}</p>
+            <p className={emailError ? 'show' : 'hide'}>{emailError}</p>
 
             <label htmlFor="password">Password</label>
             <input type="password" 
@@ -74,9 +96,9 @@ const Signup = () => {
             <button className='button'
                     onClick={
                       (e) => {
-                        checkUsername(e, username)
-                        checkPassword(e, password)
-                        checkPasswordConf(e, password, passwordConf)
+                        if (checkEmail(e, email) && checkPassword(e, password) && checkPasswordConf(e, password, passwordConf)) {
+                          navigate('/dashboard')
+                        }  
                       }
                     }
             >

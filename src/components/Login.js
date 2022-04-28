@@ -1,20 +1,25 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '../firebase'
 import '../styles/form.css'
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState('')
-  const [usernameError, setUsernameError] = useState('')
+  const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  let navigate = useNavigate()
 
-  const checkUsername = (event, username) => {
-    if (username === '') {
+  const checkEmail = (event, email) => {
+    if (email === '') {
       event.preventDefault()
-      setUsernameError('You must enter a username')
+      setEmailError('You must enter an email')
+      return false
     } else {
-      setUsernameError('')
+      setEmailError('')
+      return true
     }    
   }
 
@@ -22,23 +27,36 @@ const Login = () => {
     if (password === '') {
       event.preventDefault()
       setPasswordError('You must enter a username')
+      return false
     } else {
       setPasswordError('')
+      return true
     }    
+  }
+
+  const signIn = (email, password) => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then(userCredential => {
+        const user = userCredential.user
+        console.log(user)
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   return (
     <div className='container'>
         <h1>Log in</h1> 
         <form className='form'>
-            <label htmlFor="username">Username</label>
+            <label htmlFor="email">Email</label>
             <input type="text" 
-                   id="username" 
+                   id="email" 
                    className='input'
-                   value={username}
-                   onChange={(e) => setUsername(e.target.value)}
+                   value={email}
+                   onChange={(e) => setEmail(e.target.value)}
             />
-            <p className={usernameError === '' ? 'hide' : 'show'}>{usernameError}</p>
+            <p className={emailError === '' ? 'hide' : 'show'}>{emailError}</p>
             <label htmlFor="password">Password</label>
             <input type="password" 
                    id="password" 
@@ -51,8 +69,9 @@ const Login = () => {
               className='button'
               onClick={
                 (e) => {
-                  checkUsername(e, username)
-                  checkPassword(e, password)
+                  if (checkEmail(e, email) && checkPassword(e, password)) {
+                    navigate('/dashboard')
+                  } 
                 }
               }
             >Log in</button>

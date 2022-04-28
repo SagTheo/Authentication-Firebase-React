@@ -1,12 +1,22 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { signOut } from 'firebase/auth'
+import { auth } from '../firebase'
 import person from '../icons/person.svg'
 import styles from '../styles/Dashboard.module.css'
 
 const Dashboard = () => {
   const [displayed, setDisplayed] = useState(false)
 
-  
+  const logOut = () => {
+    signOut(auth)
+      .then(() => {
+        console.log('Sign out successful')
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
 
   return (
     <div className={styles.container}>
