@@ -37,8 +37,7 @@ const Login = () => {
   const signIn = (email, password) => {
     signInWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
-        const user = userCredential.user
-        console.log(user)
+        navigate('/dashboard')
       })
       .catch(error => {
         console.log(error)
@@ -48,6 +47,7 @@ const Login = () => {
   return (
     <div className='container'>
         <h1>Log in</h1> 
+        { errorMessage !== '' && errorMessage }
         <form className='form'>
             <label htmlFor="email">Email</label>
             <input type="text" 
@@ -70,7 +70,8 @@ const Login = () => {
               onClick={
                 (e) => {
                   if (checkEmail(e, email) && checkPassword(e, password)) {
-                    navigate('/dashboard')
+                    e.preventDefault()
+                    signIn(email, password)
                   } 
                 }
               }

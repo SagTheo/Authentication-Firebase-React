@@ -54,10 +54,10 @@ const Signup = () => {
   const createUser = (email, password) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
-        const user = userCredential.user
-        console.log(user)
+        navigate('/dashboard')
       })
       .catch(error => {
+        setErrorMessage('Creation of user failed')
         console.log(error)
       })
   }
@@ -65,6 +65,7 @@ const Signup = () => {
   return (
     <div className='container'>
         <h1>Sign up</h1>
+        { errorMessage !== '' && errorMessage }
         <form className='form'>
             <label htmlFor="email">Email</label>
             <input type="text" 
@@ -97,8 +98,9 @@ const Signup = () => {
                     onClick={
                       (e) => {
                         if (checkEmail(e, email) && checkPassword(e, password) && checkPasswordConf(e, password, passwordConf)) {
-                          navigate('/dashboard')
-                        }  
+                          e.preventDefault()
+                          createUser(email, password)
+                        }
                       }
                     }
             >
