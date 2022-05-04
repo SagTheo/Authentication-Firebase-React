@@ -16,6 +16,7 @@ const Login = () => {
     if (email === '') {
       event.preventDefault()
       setEmailError('You must enter an email')
+      setErrorMessage('')
       return false
     } else {
       setEmailError('')
@@ -27,6 +28,7 @@ const Login = () => {
     if (password === '') {
       event.preventDefault()
       setPasswordError('You must enter a username')
+      setErrorMessage('')
       return false
     } else {
       setPasswordError('')
@@ -40,14 +42,14 @@ const Login = () => {
         navigate('/dashboard')
       })
       .catch(error => {
-        console.log(error)
+        setErrorMessage('This account doesn\'t exist')
       })
   }
 
   return (
     <div className='container'>
         <h1>Log in</h1> 
-        { errorMessage !== '' && errorMessage }
+        <p className={errorMessage ? 'error' : 'noError'}>{ errorMessage !== '' && errorMessage }</p>
         <form className='form'>
             <label htmlFor="email">Email</label>
             <input type="text" 

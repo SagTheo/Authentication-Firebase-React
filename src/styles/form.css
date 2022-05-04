@@ -37,6 +37,19 @@
     cursor: pointer;
 }
 
+.error {
+    background-color: rgb(247, 171, 171);
+    color: red;
+    border-radius: 12px;
+    text-align: center;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.noError {
+    display: none
+}
+
 .hide {
     display: none;
 }

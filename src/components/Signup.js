@@ -13,11 +13,16 @@ const Signup = () => {
   const [passwordError, setPasswordError] = useState('')
   const [passwordConfError, setPasswordConfError] = useState('')
   let navigate = useNavigate()
+  const emailRegex = new RegExp('(\\w+|\\d+)@(\\w+|\\d+)\.\\w{2,3}')
 
   const checkEmail = (event, email) => {
     if (email === '') {
       event.preventDefault()
       setEmailError('You must enter an email')
+      return false
+    } else if (emailRegex.test(email)) {
+      event.preventDefault()
+      setEmailError('You must enter a valid email')
       return false
     } else {
       setEmailError('')
@@ -29,6 +34,10 @@ const Signup = () => {
     if (password === '') {
       event.preventDefault()
       setPasswordError('You must enter a password')
+      return false
+    } else if (password.length < 6) {
+      event.preventDefault()
+      setPasswordError('Password must have at least 6 characters')
       return false
     } else {
       setPasswordError('')
@@ -58,14 +67,13 @@ const Signup = () => {
       })
       .catch(error => {
         setErrorMessage('Creation of user failed')
-        console.log(error)
       })
   }
 
   return (
     <div className='container'>
         <h1>Sign up</h1>
-        { errorMessage !== '' && errorMessage }
+        <p className={errorMessage ? 'error' : 'noError'}>{ errorMessage !== '' && errorMessage }</p>
         <form className='form'>
             <label htmlFor="email">Email</label>
             <input type="text" 
