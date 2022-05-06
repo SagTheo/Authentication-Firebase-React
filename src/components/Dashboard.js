@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { signOut } from 'firebase/auth'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { auth } from '../firebase'
 import person from '../icons/person.svg'
 import styles from '../styles/Dashboard.module.css'
 
 const Dashboard = () => {
   const [displayed, setDisplayed] = useState(false)
+  const [user, setUser] = useState()
   const navigate = useNavigate()
 
   const logOut = () => {
@@ -19,9 +20,14 @@ const Dashboard = () => {
       })
   }
 
+  onAuthStateChanged(auth, user => {
+    setUser(user)
+  })
+
   return (
     <div className={styles.container}>
-      <p className={styles.username}>Username 
+      <p className={styles.username}>
+        { user ? user.email : 'Username' } 
         <img src={person} 
              alt='profile-pic'
              onMouseEnter={() => setDisplayed(true)}

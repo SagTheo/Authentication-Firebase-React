@@ -13,14 +13,19 @@ const Signup = () => {
   const [passwordError, setPasswordError] = useState('')
   const [passwordConfError, setPasswordConfError] = useState('')
   let navigate = useNavigate()
-  const emailRegex = new RegExp('(\\w+|\\d+)@(\\w+|\\d+)\.\\w{2,3}')
+  const emailRegex = new RegExp(/\w+@\w+\.\w{2,3}/)
 
   const checkEmail = (event, email) => {
+    //To reset the error messages relating to the password entries to an empty 
+    //string of characters(prevents irrelevant password error messages)
+    setPasswordError('')
+    setPasswordConfError('')
+
     if (email === '') {
       event.preventDefault()
       setEmailError('You must enter an email')
       return false
-    } else if (emailRegex.test(email)) {
+    } else if (!emailRegex.test(email)) {
       event.preventDefault()
       setEmailError('You must enter a valid email')
       return false
