@@ -14,6 +14,7 @@ const Dashboard = () => {
     signOut(auth)
       .then(() => {
         navigate('/')
+        window.localStorage.setItem('currentUser', false)
       })
       .catch(error => {
         console.log(error)

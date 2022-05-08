@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { useState } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from './firebase'
@@ -14,14 +14,34 @@ function App() {
     setUser(user)
   })
 
+  if (user) {
+    window.localStorage.setItem('currentUser', 'signedIn')
+  } else {
+    window.localStorage.setItem('currentUser', '')
+  }
+
+  if (window.localStorage.getItem('currentUser')) {
+    console.log('currentUser')
+  } else {
+    console.log('no currentUser')
+  }
+
   return (
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      {/* 
+        Doesn't work -> onAuthStateChanged is asynchronous -> while setUser() is setting 
+        the currently signed user, the user state key is set to nothing -> even if there is 
+        a currently signed in user, they will be redirected to the '/' page 
+      */}
       {
-        user && <Route path="/dashboard" element={<Dashboard />} />
+        window.localStorage.getItem('currentUser') && <Route path="/dashboard" element={<Dashboard />} />
       }
-      <Route path="*" element={user ? <NotFound /> : <Login />} />
+      {
+        !window.localStorage.getItem('currentUser') && <Route path="/dashboard" element={<Navigate to ="/" />} />
+      }
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
